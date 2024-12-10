@@ -6,7 +6,7 @@
 /*   By: rcini-ha <rcini-ha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 15:03:16 by rcini-ha          #+#    #+#             */
-/*   Updated: 2024/12/09 19:12:00 by rcini-ha         ###   ########.fr       */
+/*   Updated: 2024/12/10 11:13:50 by rcini-ha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,10 @@ char	*read_file(int fd, char *res)
 			return (free(buffer), free(res), NULL);
 		if (byte_read == 0)
 			break;
-
 		buffer[byte_read] = '\0';
 		res = ft_strjoin(res, buffer);
+		if(!res)
+			return  free(buffer),NULL;
 	}
 	free(buffer);
 	return (res);
@@ -76,6 +77,8 @@ char	*ft_next_buffer(char *buffer)
 	i = 0;
 	 if (!buffer)  
         return (NULL);
+	if(!ft_strchr(buffer, '\n'))
+		return free(buffer), NULL;
 	while (buffer[i] && buffer[i] != '\n')
 		i++;
 	if (!buffer[i])
@@ -84,7 +87,7 @@ char	*ft_next_buffer(char *buffer)
 	lengt_buffer = ft_strlen(buffer) - i;
 	dest = malloc((lengt_buffer + 1) * sizeof(char));
 	if (!dest)
-		return (NULL);
+		return free(buffer),(NULL);
 	i++;
 	j = 0;
 	while (buffer[i])
@@ -108,22 +111,22 @@ char	*get_next_line(int fd)
 	buffer = ft_next_buffer(buffer);
 	return (line);
 }
+int	main(void)
+{
+	char	*line;
+	int		fd1;
 
-// int	main(void)
-// {
-// 	char	*line;
-// 	int		fd1;
+	fd1 = open("one_line_no_nl.txt", O_RDONLY);
+	// line = get_next_line(49);
+	// printf("line: <%s>\n",line);
+	// free(line);
+	line = get_next_line(fd1);
+	printf("line: <%s>\n",line);
+	free(line);
+	line = get_next_line(fd1);
+	printf("line: <%s>\n",line);
+	free(line);
 
-// 	fd1 = open("test.txt", O_RDONLY);
-// 	// line = get_next_line(49);
-// 	// printf("line: <%s>\n",line);
-// 	// free(line);
-// 	line = get_next_line(fd1);
-// 	printf("line: <%s>\n",line);
-// 	free(line);
-// 	line = get_next_line(fd1);
-// 	printf("line: <%s>\n",line);
-// 	free(line);
-// 	close(fd1);
-// 	return (0);
-// }
+	close(fd1);
+	return (0);
+}
